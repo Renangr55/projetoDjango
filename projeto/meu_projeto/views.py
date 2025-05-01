@@ -1,11 +1,18 @@
 from django.shortcuts import render
 from rest_framework.generics import  RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from .models import Usuario, Professor, Ambiente, Disciplina
-from .serializers import UsuarioSerializer,ProfessorSerializer,AmbienteSerializer,DisciplinaSerializer
+from .serializers import (UsuarioSerializer,
+                          ProfessorSerializer,
+                          AmbienteSerializer,
+                          DisciplinaSerializer,
+                          LoginSerializer)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .permissions import (isGestor,
+                          isProfessor)
 
 #classe da exibição da quantidade de usuarios
 class UsuarioPaginacao(PageNumberPagination):
@@ -26,7 +33,7 @@ class AmbientePagination(PageNumberPagination):
     page_query_param = 'page-size'
     max_page_size = 10
 
-#classe da exibição da quantidade de ambientes
+#classe da exibição da quantidade das disciplinas
 class DisciplinaPagination(PageNumberPagination):
     page_size = 3
     page_query_param = 'page-size'
@@ -38,7 +45,7 @@ class ProfessorListCreateAPIView(ListCreateAPIView):
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
     pagination_class = ProfessorPagination
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [isGestor]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -47,11 +54,14 @@ class ProfessorListCreateAPIView(ListCreateAPIView):
             queryset = queryset.filter(nome__icontains=ni)
         return queryset
     
+    def get_permissions(self):
+        return super().get_permissions()
+    
 class ProfessorRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
     lookup_field = 'pk'
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [isGestor]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -87,7 +97,7 @@ class DisciplinaListCreateAPIView(ListCreateAPIView):
     queryset = Disciplina.objects.all()
     pagination_class = DisciplinaPagination
     serializer_class = DisciplinaSerializer
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [isGestor]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -101,7 +111,7 @@ class DisciplinaRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     pagination_class = DisciplinaPagination
     serializer_class = DisciplinaSerializer
     lookup_field = 'pk'
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -129,7 +139,7 @@ class AmbienteListCreateAPIView(ListCreateAPIView):
     queryset = Ambiente.objects.all()
     serializer_class = AmbienteSerializer
     pagination_class = AmbientePagination
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [isGestor]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -143,7 +153,7 @@ class AmbienteRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = AmbienteSerializer
     lookup_field = 'pk'
     pagination_class = AmbientePagination
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [isGestor]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -166,6 +176,24 @@ class AmbienteRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data ,status=status.HTTP_200_OK)
+    
+    
+class UsuarioListCreateAPIView(ListCreateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+    pagination_class = UsuarioPaginacao
+    permission_classes = [isGestor]
+    
+    
+    
+
+    
+
+    
+    
+    
+class LoginView(TokenObtainPairView):
+    serializer_class = LoginSerializer
 
 
 

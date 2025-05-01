@@ -26,7 +26,7 @@ class Professor(models.Model):
     telefone = models.CharField(max_length=11,null=True,blank=True)
     data_nascimento = models.DateField()
     data_contratacao = models.DateField()
-    #disciplina_atribuida = models.ForeignKey()
+    
 
 
     def __str__(self):

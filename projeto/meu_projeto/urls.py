@@ -4,14 +4,25 @@ from .views import(ProfessorListCreateAPIView,
                    DisciplinaListCreateAPIView,
                    DisciplinaRetrieveUpdateDestroyAPIView,
                    AmbienteListCreateAPIView,
-                   AmbienteRetrieveUpdateDestroyAPIView
+                   AmbienteRetrieveUpdateDestroyAPIView,
+                   UsuarioListCreateAPIView
                    )
+from rest_framework_simplejwt.views import(TokenObtainPairView,
+                                           TokenRefreshView
+                                            )
 
 urlpatterns = [
     path('Professores',ProfessorListCreateAPIView.as_view()),
     path('Professores/<int:pk>',ProfessorRetrieveUpdateDestroyAPIView.as_view()),
+    
     path('Disciplinas/',DisciplinaListCreateAPIView.as_view()),
     path('Disciplinas/<int:pk>', DisciplinaRetrieveUpdateDestroyAPIView.as_view()),
+    
     path('Ambiente', AmbienteListCreateAPIView.as_view()),
-    path('Ambiente/<int:pk>', AmbienteRetrieveUpdateDestroyAPIView.as_view())
+    path('Ambiente/<int:pk>', AmbienteRetrieveUpdateDestroyAPIView.as_view()),
+    
+    path('autenticacao/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path('autenticacao/refresh', TokenRefreshView.as_view(), name="token_refresh"),
+    
+    path('usuario', UsuarioListCreateAPIView.as_view(), name="Usuario")
 ]
