@@ -14,12 +14,15 @@ class Usuario(AbstractUser):
     idade = models.PositiveIntegerField(null=True,blank=True)
     telefone = models.CharField(max_length=11,null=True,blank=True)
 
+
+
     def __str__(self):
         return self.username
 
 
 
 class Professor(models.Model):
+    user = models.ForeignKey(Usuario,on_delete=models.CASCADE)
     ni = models.CharField(max_length=100, null=False, blank=False)
     nome = models.CharField(max_length=100, null=False, blank=False)
     email = models.EmailField(max_length=254)
@@ -52,8 +55,8 @@ class Ambiente(models.Model):
     data_inicio = models.DateField()
     data_termino = models.DateField()
     periodo = models.CharField(max_length=5, choices=periodos_escolha,blank=False,null=False)
-    sala_reservada = models.CharField()
-    professor_responsavel = models.ForeignKey(Professor, on_delete=models.CASCADE)
+    sala_reservada = models.CharField(max_length=500)
+    professor_responsavel = models.ForeignKey(Professor, on_delete=models.CASCADE, limit_choices_to={'usuario':'prof'})
     disciplina_associada = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
 
     def __str__(self):

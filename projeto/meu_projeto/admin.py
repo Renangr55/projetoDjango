@@ -6,11 +6,15 @@ from django.contrib.auth.admin import UserAdmin
 class UsuarioAdmin(UserAdmin):
     list_display = ['username','biografia']
     fieldsets = UserAdmin.fieldsets + (
-        ('Campos Novos',{'fields': ('telefone','biografia','idade')}),
+        ('Informações adicionais',{
+            'fields': ('telefone','biografia','idade')
+            }),
     )
 
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Campos Novos',{'fields': ('telefone','biografia','idade')})
+        ('Informações adicionais',{
+            'fields': ('telefone','biografia','usuario'),
+        }),
     )
 
 
