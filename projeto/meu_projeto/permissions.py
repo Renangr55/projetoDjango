@@ -12,8 +12,6 @@ class IsProfessor(BasePermission):
         def has_permission(self, request, view):
             return request.user.is_authenticated and request.user.usuario == 'prof'
         
-    
-    
 
 class IsProfessorOuGestor(BasePermission):
         def has_permission(self, request, view):

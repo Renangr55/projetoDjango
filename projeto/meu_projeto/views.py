@@ -47,12 +47,8 @@ class ProfessorListCreateAPIView(ListCreateAPIView):
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
     pagination_class = ProfessorPagination
-    permission_classes = [IsProfessorOuGestor]
+    permission_classes = [IsGestor]
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [IsGestor() | IsProfessor()]
-        return [IsGestor()]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -98,12 +94,8 @@ class DisciplinaListCreateAPIView(ListCreateAPIView):
     queryset = Disciplina.objects.all()
     pagination_class = DisciplinaPagination
     serializer_class = DisciplinaSerializer
-    permission_classes = [IsProfessorOuGestor]
+    permission_classes = [IsGestor]
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [IsProfessor()]
-        return [IsGestor()]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -117,7 +109,12 @@ class DisciplinaRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     pagination_class = DisciplinaPagination
     serializer_class = DisciplinaSerializer
     lookup_field = 'pk'
-    permission_classes = [IsGestor]
+    permission_classes = [IsProfessorOuGestor]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsProfessorOuGestor()]
+        return [IsGestor()]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -146,13 +143,8 @@ class AmbienteListCreateAPIView(ListCreateAPIView):
     queryset = Ambiente.objects.all()
     serializer_class = AmbienteSerializer
     pagination_class = AmbientePagination
-    permission_classes = [IsAuthenticated]
-
-    def get_permissions(self): #gerenciando as permissões
-        if self.request.method == 'GET':
-            return [IsGestor() or IsProfessor()]
-        return [IsGestor()]
-
+    permission_classes = [IsGestor]
+    
     def get_queryset(self):
         queryset = super().get_queryset()
         sala_reservada = self.request.query_params.get('sala_reservada')
@@ -165,7 +157,12 @@ class AmbienteRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = AmbienteSerializer
     lookup_field = 'pk'
     pagination_class = AmbientePagination
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsProfessorOuGestor]
+
+    def get_permissions(self): # gerenciando as permissões
+        if self.request.method == 'GET':
+            return [IsProfessorOuGestor()]
+        return [IsGestor()]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()

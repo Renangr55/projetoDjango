@@ -56,7 +56,7 @@ class Ambiente(models.Model):
     data_termino = models.DateField()
     periodo = models.CharField(max_length=5, choices=periodos_escolha,blank=False,null=False)
     sala_reservada = models.CharField(max_length=500)
-    professor_responsavel = models.ForeignKey(Professor, on_delete=models.CASCADE, limit_choices_to={'usuario':'prof'})
+    professor_responsavel = models.ForeignKey(Professor, on_delete=models.CASCADE)
     disciplina_associada = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
 
     def __str__(self):
