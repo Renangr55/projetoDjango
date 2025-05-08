@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import Usuario, Professor, Disciplina, Ambiente
 from django.contrib.auth.admin import UserAdmin
 
-# Register your models here.
 class UsuarioAdmin(UserAdmin):
     list_display = ['username','biografia']
     fieldsets = UserAdmin.fieldsets + (

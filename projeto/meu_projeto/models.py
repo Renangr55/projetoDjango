@@ -1,9 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
-
-
 class Usuario(AbstractUser):
     USUARIOS_ESCOLHAS = [
         ('gest','gestor'),
@@ -45,6 +42,7 @@ class Disciplina(models.Model):
 
     def __str__(self):
         return self.nome_disciplina
+
 
 class Ambiente(models.Model):
     periodos_escolha = [
