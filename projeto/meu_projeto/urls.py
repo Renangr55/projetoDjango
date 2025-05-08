@@ -12,6 +12,7 @@ from rest_framework_simplejwt.views import(TokenObtainPairView,
                                             )
 
 urlpatterns = [
+
     #Operação com Professores
     path('Professores',ProfessorListCreateAPIView.as_view()),
     path('Professores/<int:pk>',ProfessorRetrieveUpdateDestroyAPIView.as_view()),

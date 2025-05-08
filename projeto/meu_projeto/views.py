@@ -191,7 +191,7 @@ class UsuarioListCreateAPIView(ListCreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     pagination_class = UsuarioPaginacao
-    
+
     
     
 class LoginView(TokenObtainPairView):
