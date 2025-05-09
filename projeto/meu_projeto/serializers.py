@@ -4,6 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
 #Serializando os dados do Login
 class LoginSerializer(TokenObtainPairSerializer):
     
@@ -29,16 +30,20 @@ class UsuarioSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProfessorSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
     class Meta:
         model = Professor
         fields = '__all__'
 
 class DisciplinaSerializer(serializers.ModelSerializer):
+    professor_responsavel = serializers.StringRelatedField()
     class Meta:
         model = Disciplina
         fields = '__all__'
 
 class AmbienteSerializer(serializers.ModelSerializer):
+    disciplina_associada = serializers.StringRelatedField()
+    professor_responsavel = serializers.StringRelatedField()
     class Meta:
         model = Ambiente
         fields = '__all__'

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.generics import  RetrieveUpdateDestroyAPIView, ListCreateAPIView
+from rest_framework.generics import  RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView
 from .models import Usuario, Professor, Ambiente, Disciplina
 from .serializers import (UsuarioSerializer,
                           ProfessorSerializer,
@@ -42,7 +42,7 @@ class DisciplinaPagination(PageNumberPagination):
     max_page_size = 10
 
 
-#OPERAÇÕES COM PROFESSORES
+#OPERAÇÕES COM PROFESSORES PARA GESTOR
 class ProfessorListCreateAPIView(ListCreateAPIView):
     queryset = Professor.objects.all()
     serializer_class = ProfessorSerializer
@@ -109,12 +109,7 @@ class DisciplinaRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     pagination_class = DisciplinaPagination
     serializer_class = DisciplinaSerializer
     lookup_field = 'pk'
-    permission_classes = [IsProfessorOuGestor]
-
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            return [IsProfessorOuGestor()]
-        return [IsGestor()]
+    permission_classes = [IsGestor]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -133,6 +128,7 @@ class DisciplinaRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
+        "Se tiver cache de prefetch aqui, limpa! Porque os dados mudaram, e quero que a próxima leitura venha atualizada direto do banco."
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
@@ -157,12 +153,7 @@ class AmbienteRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = AmbienteSerializer
     lookup_field = 'pk'
     pagination_class = AmbientePagination
-    permission_classes = [IsProfessorOuGestor]
-
-    def get_permissions(self): # gerenciando as permissões
-        if self.request.method == 'GET':
-            return [IsProfessorOuGestor()]
-        return [IsGestor()]
+    permission_classes = [IsGestor]
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -181,10 +172,30 @@ class AmbienteRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
+        "Se tiver cache de prefetch aqui, limpa! Porque os dados mudaram, e quero que a próxima leitura venha atualizada direto do banco."
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data ,status=status.HTTP_200_OK)
+    
+class ProfessorListandoDisciplina(ListAPIView):
+    queryset = Disciplina.objects.all()
+    serializer_class = DisciplinaSerializer
+    permission_classes = [IsProfessorOuGestor]
+
+    def get_queryset(self):
+        id_professor  = Professor.objects.filter(user=self.request.user.id)[0].id
+        return super().get_queryset().filter(professor_responsavel=id_professor)
+    
+class ProfessorListandoAmbiente(ListAPIView):
+    queryset = Ambiente.objects.all()
+    serializer_class = AmbienteSerializer
+    permission_classes = [IsProfessorOuGestor]
+
+    def get_queryset(self):
+        id_professor = Professor.objects.filter(user=self.request.user.id)[0].id
+        return super().get_queryset().filter(professor_responsavel=id_professor)
+    
     
     
 class UsuarioListCreateAPIView(ListCreateAPIView):
