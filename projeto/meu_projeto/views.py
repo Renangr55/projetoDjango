@@ -26,19 +26,19 @@ class UsuarioPaginacao(PageNumberPagination):
 #classe da exibição da quantidade de professor
 class ProfessorPagination(PageNumberPagination):
     page_size = 3
-    page_query_param = 'page_size'
+    page_size_query_param = 'page_size'
     max_page_size = 10
 
 #classe da exibição da quantidade de ambientes
 class AmbientePagination(PageNumberPagination):
     page_size = 3
-    page_query_param = 'page-size'
+    page_size_query_param = 'page_size'
     max_page_size = 10
 
 #classe da exibição da quantidade das disciplinas
 class DisciplinaPagination(PageNumberPagination):
     page_size = 3
-    page_query_param = 'page-size'
+    page_size_query_param = 'page-size'
     max_page_size = 10
 
 
@@ -186,6 +186,7 @@ class ProfessorListandoDisciplina(ListAPIView):
     def get_queryset(self):
         id_professor  = Professor.objects.filter(user=self.request.user.id)[0].id
         return super().get_queryset().filter(professor_responsavel=id_professor)
+        
     
 class ProfessorListandoAmbiente(ListAPIView):
     queryset = Ambiente.objects.all()
@@ -193,7 +194,7 @@ class ProfessorListandoAmbiente(ListAPIView):
     permission_classes = [IsProfessorOuGestor]
 
     def get_queryset(self):
-        id_professor = Professor.objects.filter(user=self.request.user.id)[0].id
+        id_professor = Professor.objects.filter(user=self.request.user.id)[0].id # pegando sempre o primeiro id de Professor
         return super().get_queryset().filter(professor_responsavel=id_professor)
     
     

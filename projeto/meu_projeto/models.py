@@ -50,8 +50,8 @@ class Ambiente(models.Model):
         ('Tarde', 'Tarde'),
         ('Noite', 'Noite'),
     ]
-    data_inicio = models.DateField()
-    data_termino = models.DateField()
+    data_inicio = models.DateTimeField()
+    data_termino = models.DateTimeField()
     periodo = models.CharField(max_length=5, choices=periodos_escolha,blank=False,null=False)
     sala_reservada = models.CharField(max_length=500)
     professor_responsavel = models.ForeignKey(Professor, on_delete=models.CASCADE)
@@ -59,3 +59,5 @@ class Ambiente(models.Model):
 
     def __str__(self):
         return self.sala_reservada
+    class Meta:
+        ordering = ['-id']
