@@ -1,2 +1,4 @@
 Link da documentação no Postman
 https://documenter.getpostman.com/view/41860419/2sB2jAaT6u
+
+antes de testar aplicação rode os comandos básicos e crie um superusuario dorival
